@@ -1,0 +1,82 @@
+HILL AND VALLEY PREDICITON WITH LOGISTIC REGRESSION\
+
+The primary objective of this project is to build a machine learning model that can accurately classify data points as representing either a hill or a valley.
+
+The data source is github of ybi foundation.
+
+Import Library:
+import pandas as pd
+
+Import Data
+data = pd.read_csv('https://github.com/YBI-Foundation/Dataset/raw/main/Hill%20Valley%20Dataset.csv')
+
+ Describe Data:
+print(data.head())
+print(data.info())
+print(data.describe())
+print(data.isnull().sum())  # Check for missing values
+
+Data Visualization:
+print(data.isnull().sum())
+
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+feature_columns = data.columns.difference(['class'])
+data[feature_columns] = scaler.fit_transform(data[feature_columns])
+
+Define Target Variable (y) and Feature Variables (X) :
+X = data.drop('class', axis=1)
+y = data['class']
+
+ Train Test Split:
+from sklearn.model_selection import train_test_split
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+Modeling:
+from sklearn.linear_model import LogisticRegression
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+ Model Evaluation:
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+y_pred = model.predict(X_test)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy}')
+
+# Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+print(f'Confusion Matrix:\n{conf_matrix}')
+
+# Classification Report
+class_report = classification_report(y_test, y_pred)
+print(f'Classification Report:\n{class_report}')
+
+
+Prediction:
+new_data = pd.DataFrame({
+    # Assuming new data has the same structure as the features in the training data
+    # Example: 'feature1': [value1, value2, ...], 'feature2': [value1, value2, ...]
+})
+
+new_data_scaled = scaler.transform(new_data)
+
+
+predictions = model.predict(new_data_scaled)
+print(f'Predictions: {predictions}')
+
+Explanation:
+# Coefficients of the features
+coefficients = pd.DataFrame({
+    'Feature': X.columns,
+    'Coefficient': model.coef_[0]
+})
+print(coefficients)
+
+# Interpretation
+print("Higher absolute values of coefficients indicate stronger influence on the prediction.")
